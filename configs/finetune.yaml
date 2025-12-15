@@ -1,0 +1,39 @@
+experiment:
+  name: transformer_intent_finetuning
+  description: >
+    Fine-tune a small transformer model for customer support
+    intent classification using full fine-tuning and LoRA.
+
+model:
+  name: distilbert-base-uncased
+  num_labels: 27
+
+finetuning:
+  method: lora            # full | lora
+
+training:
+  epochs: 3
+  batch_size: 16
+  learning_rate: 2.0e-5
+  max_sequence_length: 128
+  warmup_ratio: 0.1
+  weight_decay: 0.01
+
+dataset:
+  train_split: 0.8
+  val_split: 0.1
+  test_split: 0.1
+  text_column: instruction
+  label_column: intent
+
+lora:
+  r: 8
+  alpha: 16
+  dropout: 0.1
+  target_modules:
+    - q_lin
+    - v_lin
+
+compute_estimates:
+  gpu_type: kaggle_t4
+  estimated_training_time_minutes: 45
