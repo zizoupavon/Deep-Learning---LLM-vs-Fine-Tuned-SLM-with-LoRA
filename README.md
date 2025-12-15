@@ -70,15 +70,87 @@ Before training or evaluation, placeholder tokens are replaced with realistic sy
 
 ## 🧠 Modeling Approaches
 
-### Approach 1: Zero- / Few-Shot Classification with LLMs
+---
 
-- Models tested: GPT-4, Claude, Gemini (via API)
-- Uses a list of intents and optional few-shot examples
-- Evaluated on **~270 samples** (≈10 per intent class) to control API cost
-- Tracks:
+## Approach 1: Large Language Model (LLM) Inference
+
+### Description
+This approach uses a **large general-purpose language model** to classify customer intent via prompting, without task-specific fine-tuning.
+
+### Model Used
+- **GPT-4.1 Mini, GPT-4, Claude, Gemini **** (via API)
+
+### Prompting Strategy
+- **Zero-shot prompting** was used as the primary strategy
+- A structured list of all possible intents was included in the prompt
+- Few-shot prompting was evaluated conceptually but not used in the final reported results to control API cost and latency
+
+### Evaluation Setup
+- ~270 test samples (≈10 per intent class)
+- Metrics:
   - Accuracy
   - Macro-F1
-  - Inference time per 1,000 samples (estimated)
-  - Approximate API cost (USD)
+- Additional tracking:
+  - Estimated inference time per 1,000 samples
+  - Approximate API cost
 
-**Output Metrics**
+### Key Characteristics
+- No training required
+- Fast to prototype
+- Higher per-request cost
+- Latency depends on external API calls
+
+---
+
+## Approach 2: Fine-Tuned Small Language Model (SLM)
+
+### Description
+This approach fine-tunes a **small, open-source transformer model** specifically for intent classification using labeled customer support data.
+
+### Model Used
+- **DistilRoBERTa**
+- Selected for its strong performance-to-size tradeoff and suitability for production deployment
+
+### Fine-Tuning Strategy
+Two fine-tuning strategies were considered:
+
+1. **Full Fine-Tuning** (conceptual baseline)
+2. **LoRA Fine-Tuning** (implemented)
+
+➡️ **LoRA fine-tuning was used in the final experiments** to reduce training cost and number of trainable parameters while maintaining performance.
+
+### Training Setup
+- Framework: HuggingFace Transformers + PEFT (LoRA)
+- GPU: Kaggle T4
+- Training parameters controlled via `configs/finetune.yaml`
+- Model trained on the same dataset split used in Approach 1
+
+### Evaluation Metrics
+- Accuracy
+- Macro-F1
+- Training time
+- Estimated compute cost
+
+### Key Characteristics
+- Requires upfront training
+- Very low inference latency
+- Low marginal cost at scale
+- Fully deployable on private infrastructure
+
+---
+
+## Unified Evaluation Framework
+
+| Metric | Description |
+|------|------------|
+| Accuracy | Percentage of correctly predicted intents |
+| Macro-F1 | Average F1-score across all intent classes |
+| Time | Inference or training time per 1,000 samples |
+| Cost | API cost (LLM) or GPU compute estimate |
+| Model Size | Number of trainable parameters (reference) |
+
+All comparisons are based on **identical intent labels and data splits**.
+
+---
+
+## Repository Structure
