@@ -1,0 +1,26 @@
+
+---
+
+## Key Questions Addressed
+
+- How does zero-shot LLM performance compare to a fine-tuned SLM?
+- What is the cost break-even point between API usage and fine-tuning?
+- How do latency and scalability differ between approaches?
+- Which approach is more suitable for startups vs enterprises?
+
+---
+
+## Business Relevance
+
+This comparison reflects a **real-world decision** faced by companies deploying AI in customer support:
+
+- **LLMs** offer speed and flexibility for early-stage experimentation
+- **Fine-tuned SLMs** offer superior economics, control, and latency at scale
+
+The final recommendation is detailed in the accompanying business memo.
+
+---
+
+## Author
+
+Academic project focused on **applied machine learning evaluation and AI strategy**.
