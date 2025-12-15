@@ -1,6 +1,30 @@
+experiment:
+  name: llm_zero_few_shot_intent_classification
+  description: >
+    Evaluate large language models for customer support intent
+    classification using zero- and few-shot prompting.
+
 llm:
+  provider: openai        # openai | anthropic | gemini
   model: gpt-4o-mini
   temperature: 0.0
+  max_tokens: 64
+
+prompting:
+  strategy: few_shot      # zero_shot | few_shot
+  shots_per_intent: 1
+  include_intent_list: true
 
 evaluation:
+  total_samples: 270
   samples_per_intent: 10
+  metrics:
+    - accuracy
+    - macro_f1
+
+performance_estimates:
+  inference_time_per_1k_samples_seconds: 35
+
+cost_estimates:
+  price_per_1k_tokens_usd: 0.002
+  estimated_tokens_per_request: 150
